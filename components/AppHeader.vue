@@ -1,9 +1,7 @@
 <template>
     <header class="app-header">
-        <h1>Todo List</h1>
-        <div class="small">local</div>
+        <h1>Product</h1>
     </header>
 </template>
-
 <script setup lang="ts"></script>
 <style scoped></style>
