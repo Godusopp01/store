@@ -17,7 +17,7 @@ export const useProductStore = defineStore('product', {
     removeFromCart(id: string) {   
       this.cart = this.cart.filter(c => c.id !== id)
     },
-    clearCart() {   // ✅ เพิ่มฟังก์ชันนี้
+    clearCart() {   
       this.cart = []
     },
     addToCart(item:any) {

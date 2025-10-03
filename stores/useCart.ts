@@ -1,4 +1,3 @@
-// composables/useCart.ts
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/stores/product'
