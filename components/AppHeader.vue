@@ -1,7 +1,6 @@
 <template>
     <header class="app-header">
-        <h1>Todo List</h1>
-        <div class="small">local</div>
+        <h1 class="head">Product</h1>
     </header>
 </template>
 

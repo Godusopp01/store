@@ -1,61 +1,48 @@
 <template>
-  <div class="container">
-    <app-header />
-    <todo-form :model="editingModel" @save="onSave" @cancel="onCancelEdit" />
-    <todo-list :todos="todos" @edit="onEdit" @remove="onRemove" @toggle="onToggle" />
-    <div style="margin-top:16px;display:flex;gap:8px">
-      <button class="btn ghost" @click="clearAll">Clear all</button>
-      <div class="small" style="align-self:center">Total: {{ todos.length }}</div>
+  <div class="main">
+  <app-header/>
+  <hr class="my-6" />
+  <button class="go-cart">
+      <NuxtLink to="/cart" class="px-4 py-2 bg-blue-600 text-white rounded">
+        🛒 Go to Cart ({{ cart.length }})
+      </NuxtLink>
+  </button>
+    <div v-if="!products.length">Loading...</div>
+
+    <div class="scroll-row">
+      <div v-for="p in products" :key="p.id" class="card">
+        <img :src="p.image" :alt="p.productName" class="img" />
+        <p>{{ p.productName }}</p>
+        <p>฿{{ p.price }}</p>
+        <button class="btn-add"
+                @click="addToCart(p)">Add to Cart</button>
+      </div>
     </div>
 
-    <app-footer />
+    <hr class="my-6" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useTodos } from '~/composables/useTodos'
-import AppHeader from '~/components/AppHeader.vue'
-import AppFooter from '~/components/AppFooter.vue'
-import TodoForm from '~/components/Todoform.vue'
-import TodoList from '~/components/TodoList.vue'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useProductStore } from '~/stores/product'
 
-const { todos, addTodo, updateTodo, removeTodo, clearAll } = useTodos()
+const store = useProductStore()
+const { products, cart } = storeToRefs(store) 
+const { fetchProducts } = store
 
-
-const editingId = ref<number | null>(null)
-const editingModel = computed(() => {
-  if (editingId.value == null) return null
-  const t = todos.value.find((x) => x.id === editingId.value)
-  return t ? { id: t.id, title: t.title } : null
-})
-
-function onSave(payload: { id?: number; title: string }) {
-  if (payload.id != null) {
-    updateTodo(payload.id, { title: payload.title })
-    editingId.value = null
-  } else {
-    addTodo(payload.title)
-  }
+function addToCart(product: { id: string; productName: string; price: string }) {
+  cart.value.push(product)
 }
-
-function onEdit(id: number) {
-  editingId.value = id
-}
-
-function onCancelEdit() {
-  editingId.value = null
-}
-
-function onRemove(id: number) {
-  if (confirm('Delete this task?')) removeTodo(id)
-}
-
-function onToggle(id: number) {
-  const t = todos.value.find((x) => x.id === id)
-  if (!t) return
-  updateTodo(id, { completed: !t.completed })
+// ดึงข้อมูลสินค้า
+fetchProducts()
+function clearCart() {
+  cart.value = []
 }
 </script>
 
-<style scoped></style>
+
+<style>
+body { font-family: sans-serif; }
+</style>
